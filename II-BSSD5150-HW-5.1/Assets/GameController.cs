@@ -16,6 +16,8 @@ public class GameController : MonoBehaviour
     private float distance;
     private GameObject player;
 
+    private bool isCountingDown = true; 
+
     private void OnEnable()
     {
         countDown = gameTime;
@@ -46,22 +48,25 @@ public class GameController : MonoBehaviour
 
     private IEnumerator CountDown()
     {
-        yield return new WaitForSecondsRealtime(1.0f);
-        StopCoroutine("CountDown");
-        countDown--;
-
-        // Move a percentage of the distance to be offscreen
-        timer.position = new Vector3(distance / gameTime, 0, 0);
-
-        if (countDown == 0)
+        while (isCountingDown)
         {
-            Debug.Log("You Lose");
-            player.transform.DetachChildren();
-        }
-        else
-        {
-            StartCoroutine("CountDown");
+            yield return new WaitForSecondsRealtime(1.0f);
+            countDown--;
+
+            // Move a percentage of the distance to be offscreen
+            timer.position = new Vector3(distance / gameTime, 0, 0);
+
+            if (countDown == 0)
+            {
+                Debug.Log("You Lose");
+                player.transform.DetachChildren();
+            }
         }
     }
-}
 
+    // Public function to stop counting down
+    public void StopCountingDown()
+    {
+        isCountingDown = false;
+    }
+}
